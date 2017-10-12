@@ -301,6 +301,7 @@ my_predicted_image = predict(d["w"], d["b"], my_image)
 
 plt.imshow(image)
 plt.show()
+print("haohaogittest")
 print("y = " + str(np.squeeze(my_predicted_image)) + ", your algorithm predicts a \"" + classes[int(np.squeeze(my_predicted_image)),].decode("utf-8") +  "\" picture.")
 
 
