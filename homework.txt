@@ -12,16 +12,15 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 
+import org.omg.CORBA.PUBLIC_MEMBER;
 
-
-
-public class homework {
+public class SolveMinimax {
 	public static void main(String[] args) throws IOException {
 		// TODO Auto-generated method stub
 		InputUtils.input();
 		RefreshSign.refreshSign();
 		MinimaxTree.createMinimaxTree(StaticValue.arr);
-		for (int i = 0; i < (StaticValue.minmaxTree.get("root").size()/2)+1; i++) {
+		for (int i = 0; i < 3; i++) {
 			// StaticValue.array, StaticValue.arrayCopy
 			if (1==StaticValue.minmaxTree.get("root").size()||i > (StaticValue.minmaxTree.get("root").size() - 1))
 				break;
@@ -44,7 +43,7 @@ public class homework {
 		}
 		int result = 0;
 		int index = 0;
-		for (int a = 0; a <  (StaticValue.minmaxTree.get("root").size()/2)+1; a++) {
+		for (int a = 0; a < 3; a++) {
 			if (1==StaticValue.minmaxTree.get("root").size() ||a > (StaticValue.minmaxTree.get("root").size() - 1))
 				break;
 			ArrayList<ArrayList<int[]>> arr = StaticValue.minmaxTree
@@ -61,16 +60,16 @@ public class homework {
 				result = res;
 				index = a;
 			}
-			 /*System.out.println(res);
-			 System.out.println(StaticValue.minmaxTree.get("root").get(a).hashCode());
-			
-			  for(int i=0;i<arr.size();i++) {
-			  System.out.println(arr.get(i).size()); for(int
-			  j=0;j<arr.get(i).size();j++){ System.out.print('[');
-			  System.out.print(arr.get(i).get(j)[0]); System.out.print(',');
-			  System.out.print(arr.get(i).get(j)[1]); System.out.print(']'); }
-			  System.out.println(); }*/
-			 
+			// System.out.println(res);
+			// System.out.println(StaticValue.minmaxTree.get("root").get(a).hashCode());
+			/*
+			 * for(int i=0;i<arr.size();i++) {
+			 * System.out.println(arr.get(i).size()); for(int
+			 * j=0;j<arr.get(i).size();j++){ System.out.print('[');
+			 * System.out.print(arr.get(i).get(j)[0]); System.out.print(',');
+			 * System.out.print(arr.get(i).get(j)[1]); System.out.print(']'); }
+			 * System.out.println(); }
+			 */
 		}
 		System.out.println(index);
 		StaticValue.XY = StaticValue.minmaxTree.get("root").get(index).get(0);
@@ -78,201 +77,192 @@ public class homework {
 			for (int a = 0; a < StaticValue.n; a++)
 				StaticValue.array[j][a] = StaticValue.arrayCopy[j][a];
 		}
-		/*ArrayList<int[]> arra = StaticValue.arr.get(index);
-		System.out.println(arra.size());
-		for(int n=0;n<arra.size();n++){
-			System.out.print('[');
-			System.out.print(arra.get(n)[0]);
-			System.out.print(",");
-			System.out.print(arra.get(n)[1]);
-			System.out.print(']');
-		}*/
 		Replace.replace(StaticValue.arr.get(index));
 		Sink.sink();
 		InputUtils.output();
 
 	}
-
-}
-
-class MinimaxTree {
-	public static void createMinimaxTree(ArrayList<ArrayList<int[]>> arrList) throws IOException {
-		for (int i = 0; i < StaticValue.arraySign[0].length; i++) {
-			for (int j = 0; j < StaticValue.arraySign[0].length; j++)
-				if (StaticValue.arraySign[i][j] != '1'
-						&& StaticValue.array[i][j] != '*')
-					Serch.insertArr(i, j,arrList);
+	static class MinimaxTree {
+		public static void createMinimaxTree(ArrayList<ArrayList<int[]>> arrList) throws IOException {
+			for (int i = 0; i < StaticValue.arraySign[0].length; i++) {
+				for (int j = 0; j < StaticValue.arraySign[0].length; j++)
+					if (StaticValue.arraySign[i][j] != '1'
+							&& StaticValue.array[i][j] != '*')
+						Serch.insertArr(i, j,arrList);
+			}
+			Collections.sort(StaticValue.arr, new Sort());
+			ArrayList<ArrayList<int[]>> arr = new ArrayList<ArrayList<int[]>>(StaticValue.arr);
+			StaticValue.minmaxTree.put("root", arr);
 		}
-		Collections.sort(StaticValue.arr, new Sort());
-		ArrayList<ArrayList<int[]>> arr = new ArrayList<ArrayList<int[]>>(StaticValue.arr);
-		StaticValue.minmaxTree.put("root", arr);
-	}
-	@SuppressWarnings("unchecked")
-	public static void createMinimaxTreeD(ArrayList<ArrayList<int[]>> arrList) throws IOException {
-		for (int i = 0; i < StaticValue.arraySign[0].length; i++) {
-			for (int j = 0; j < StaticValue.arraySign[0].length; j++)
-				if (StaticValue.arraySign[i][j] != '1'
-				&& StaticValue.array[i][j] != '*')
-					Serch.insertArr(i, j, arrList);
+		@SuppressWarnings("unchecked")
+		public static void createMinimaxTreeD(ArrayList<ArrayList<int[]>> arrList) throws IOException {
+			for (int i = 0; i < StaticValue.arraySign[0].length; i++) {
+				for (int j = 0; j < StaticValue.arraySign[0].length; j++)
+					if (StaticValue.arraySign[i][j] != '1'
+					&& StaticValue.array[i][j] != '*')
+						Serch.insertArr(i, j, arrList);
+			}
+			Collections.sort(StaticValue.arr, new Sort());
+			//StaticValue.minmaxTree.put("", arr);
 		}
-		Collections.sort(StaticValue.arr, new Sort());
-		//StaticValue.minmaxTree.put("", arr);
 	}
-}
 
+	
+	static class Sort implements Comparator {
 
-class Sort implements Comparator {
-
-	@Override
-	public int compare(Object o1, Object o2) {
-		// TODO Auto-generated method stub
-		ArrayList<int[]> a1 = (ArrayList<int[]>) o1;
-		ArrayList<int[]> a2 = (ArrayList<int[]>) o2;
-		return a2.size() - a1.size();
+		@Override
+		public int compare(Object o1, Object o2) {
+			// TODO Auto-generated method stub
+			ArrayList<int[]> a1 = (ArrayList<int[]>) o1;
+			ArrayList<int[]> a2 = (ArrayList<int[]>) o2;
+			return a2.size() - a1.size();
+		}
 	}
-}
+	
+	static class Replace {
+		public static void replace(ArrayList<int[]> arr){
+			for (int i=0;i<arr.size();i++){
+				int[] xy=arr.get(i);
+				StaticValue.array[xy[0]][xy[1]]='*';
+			}
+		}
+		}
+	
+	static class Sink {
+			public static void sink() {
+				for (int i = 0; i < StaticValue.array[0].length; i++) {
+					for (int j = 0; j < StaticValue.array[0].length; j++) {
+						if ('*' == StaticValue.array[j][i]) {
+							for (int a = j; a > 0; a--) {
+								if (a > 0 && '*' == StaticValue.array[a - 1][i])
+									continue;
+								char temp = StaticValue.array[a][i];
+								StaticValue.array[a][i] = StaticValue.array[a - 1][i];
+								StaticValue.array[a - 1][i] = temp;
+							}
 
-class Replace {
-public static void replace(ArrayList<int[]> arr){
-	for (int i=0;i<arr.size();i++){
-		int[] xy=arr.get(i);
-		StaticValue.array[xy[0]][xy[1]]='*';
-	}
-}
-}
-
-class Sink {
-	public static void sink() {
-		for (int i = 0; i < StaticValue.array[0].length; i++) {
-			for (int j = 0; j < StaticValue.array[0].length; j++) {
-				if ('*' == StaticValue.array[j][i]) {
-					for (int a = j; a > 0; a--) {
-						if (a > 0 && '*' == StaticValue.array[a - 1][i])
-							continue;
-						char temp = StaticValue.array[a][i];
-						StaticValue.array[a][i] = StaticValue.array[a - 1][i];
-						StaticValue.array[a - 1][i] = temp;
+						}
 					}
-
 				}
 			}
 		}
-	}
+	 
+	static class Serch {
+			public static void insertArr( int x, int y, ArrayList<ArrayList<int[]>> arrList) {
+				int[] xy = new int[2];
+				xy[0] = x;
+				xy[1] = y;
+				ArrayList<int[]> arr = new ArrayList<int[]>();
+				StaticValue.arraySign[x][y]='1';
+				arr.add(xy);
+				for(int i=0;i<arr.size();i++){
+					serch(arr.get(i)[0], arr.get(i)[1], arr);}
+				arrList.add(arr);
+			}
+
+			private static void serch(int x, int y,  ArrayList<int[]> arr) {
+				for (int i = y; i >= 0; i--) {
+					if(i<1||StaticValue.array[x][i]!=StaticValue.array[x][i-1])break;
+					int[] xy = new int[2];
+					xy[0] = x;
+					xy[1] = i-1;
+					if(StaticValue.arraySign[xy[0]][xy[1]]=='1')continue;
+					StaticValue.arraySign[xy[0]][xy[1]]='1';
+					arr.add(xy);
+				}
+				for (int i = y; i <StaticValue.array[0].length; i++) {
+					if(i>StaticValue.array[0].length-2||StaticValue.array[x][i]!=StaticValue.array[x][i+1])break;
+					int[]  xy = new int[2];
+					xy[0] = x;
+					xy[1] = i+1;
+					if(StaticValue.arraySign[xy[0]][xy[1]]=='1')continue;
+					StaticValue.arraySign[xy[0]][xy[1]]='1';
+					arr.add(xy);
+				}
+				for (int i = x; i >= 0; i--) {
+					if(i<1||StaticValue.array[i][y]!=StaticValue.array[i-1][y])break;
+					int[]  xy = new int[2];
+					xy[0] = i-1;
+					xy[1] = y;
+					if(StaticValue.arraySign[xy[0]][xy[1]]=='1')continue;
+					StaticValue.arraySign[xy[0]][xy[1]]='1';
+					arr.add(xy);
+				}
+				for (int i = x; i <StaticValue.array[0].length; i++) {
+					if(i>StaticValue.array[0].length-2||StaticValue.array[i][y]!=StaticValue.array[i+1][y])break;
+					int[]  xy = new int[2];
+					xy[0] = i+1;
+					xy[1] = y;
+					if(StaticValue.arraySign[xy[0]][xy[1]]=='1')continue;
+					StaticValue.arraySign[xy[0]][xy[1]]='1';
+					arr.add(xy);
+				}
+			}
+		}
+	 static class StaticValue {
+
+			public static int n = 0;
+			public static int type;
+			public static float second;
+			public static char[][] array;
+			public static char[][] arrayCopy;
+			public static char[][] arraySign;
+			public static ArrayList<ArrayList<int[]>> arr = new ArrayList<ArrayList<int[]>>();
+			public static HashMap<String, ArrayList<ArrayList<int[]>>> minmaxTree = new HashMap<String, ArrayList<ArrayList<int[]>>>();
+			final public static char[] Char={'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','t','U','V','W','X','Y','Z'};
+			public static int[] XY;
+
+		}
+	 
+	
+		
+		static class InputUtils {
+			public static void  input() throws IOException {
+				File f = new File("C:\\Users\\zhaohui\\Desktop\\input.txt");
+				FileReader fileReader = new FileReader(f);
+				BufferedReader bufferedReader = new BufferedReader(fileReader);
+				StaticValue.n = Integer.parseInt(bufferedReader.readLine());
+				StaticValue.type = Integer.parseInt(bufferedReader.readLine());
+				StaticValue.second = Float.parseFloat(bufferedReader.readLine());
+
+				//System.out.println(n + "" + type + second);
+				StaticValue.array = new char[StaticValue.n][StaticValue.n];
+				StaticValue.arrayCopy = new char[StaticValue.n][StaticValue.n];
+				StaticValue.arraySign = new char[StaticValue.n][StaticValue.n];
+				for (int i = 0; i < StaticValue.n; i++) {
+					String st = bufferedReader.readLine();
+					StaticValue.array[i] = st.toCharArray();
+				}
+				bufferedReader.close();
+				fileReader.close();
+				for (int j = 0; j < StaticValue.n; j++) {
+					for (int a = 0; a < StaticValue.n; a++)
+					StaticValue.arrayCopy[j][a] = StaticValue.array[j][a];
+				}
+			}
+
+			public static void output() throws FileNotFoundException,
+					UnsupportedEncodingException {
+				PrintWriter writer = new PrintWriter("C:\\Users\\zhaohui\\Desktop\\output.txt", "UTF-8");
+				writer.println(StaticValue.Char[StaticValue.XY[1]]+""+(StaticValue.XY[0]+1));
+				for (int i = 0; i < StaticValue.array[0].length; i++) {
+					for (int j = 0; j < StaticValue.array[0].length; j++)
+						writer.print(StaticValue.array[i][j]);
+					writer.println();
+				}
+				writer.close();
+			}
+		}
+		static class RefreshSign {
+			public static void refreshSign() {
+				for (int i = 0; i < StaticValue.n; i++) {
+					for (int j = 0; j < StaticValue.n; j++)
+						StaticValue.arraySign[i][j] = '0';
+				}
+			}
+		}
+
+
+
+
 }
-
-class Serch {
-	public static void insertArr( int x, int y, ArrayList<ArrayList<int[]>> arrList) {
-		int[] xy = new int[2];
-		xy[0] = x;
-		xy[1] = y;
-		ArrayList<int[]> arr = new ArrayList<int[]>();
-		StaticValue.arraySign[x][y]='1';
-		arr.add(xy);
-		for(int i=0;i<arr.size();i++){
-			serch(arr.get(i)[0], arr.get(i)[1], arr);}
-		arrList.add(arr);
-	}
-
-	private static void serch(int x, int y,  ArrayList<int[]> arr) {
-		for (int i = y; i >= 0; i--) {
-			if(i<1||StaticValue.array[x][i]!=StaticValue.array[x][i-1])break;
-			int[] xy = new int[2];
-			xy[0] = x;
-			xy[1] = i-1;
-			if(StaticValue.arraySign[xy[0]][xy[1]]=='1')continue;
-			StaticValue.arraySign[xy[0]][xy[1]]='1';
-			arr.add(xy);
-		}
-		for (int i = y; i <StaticValue.array[0].length; i++) {
-			if(i>StaticValue.array[0].length-2||StaticValue.array[x][i]!=StaticValue.array[x][i+1])break;
-			int[]  xy = new int[2];
-			xy[0] = x;
-			xy[1] = i+1;
-			if(StaticValue.arraySign[xy[0]][xy[1]]=='1')continue;
-			StaticValue.arraySign[xy[0]][xy[1]]='1';
-			arr.add(xy);
-		}
-		for (int i = x; i >= 0; i--) {
-			if(i<1||StaticValue.array[i][y]!=StaticValue.array[i-1][y])break;
-			int[]  xy = new int[2];
-			xy[0] = i-1;
-			xy[1] = y;
-			if(StaticValue.arraySign[xy[0]][xy[1]]=='1')continue;
-			StaticValue.arraySign[xy[0]][xy[1]]='1';
-			arr.add(xy);
-		}
-		for (int i = x; i <StaticValue.array[0].length; i++) {
-			if(i>StaticValue.array[0].length-2||StaticValue.array[i][y]!=StaticValue.array[i+1][y])break;
-			int[]  xy = new int[2];
-			xy[0] = i+1;
-			xy[1] = y;
-			if(StaticValue.arraySign[xy[0]][xy[1]]=='1')continue;
-			StaticValue.arraySign[xy[0]][xy[1]]='1';
-			arr.add(xy);
-		}
-	}
-}
-
-class StaticValue {
-
-	public static int n = 0;
-	public static int type;
-	public static float second;
-	public static char[][] array;
-	public static char[][] arrayCopy;
-	public static char[][] arraySign;
-	public static ArrayList<ArrayList<int[]>> arr = new ArrayList<ArrayList<int[]>>();
-	public static HashMap<String, ArrayList<ArrayList<int[]>>> minmaxTree = new HashMap<String, ArrayList<ArrayList<int[]>>>();
-	final public static char[] Char={'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','t','U','V','W','X','Y','Z'};
-	public static int[] XY;
-
-}
-class InputUtils {
-	public static void  input() throws IOException {
-		File f = new File("C:\\Users\\zhaohui\\Desktop\\input.txt");
-		FileReader fileReader = new FileReader(f);
-		BufferedReader bufferedReader = new BufferedReader(fileReader);
-		StaticValue.n = Integer.parseInt(bufferedReader.readLine());
-		StaticValue.type = Integer.parseInt(bufferedReader.readLine());
-		StaticValue.second = Float.parseFloat(bufferedReader.readLine());
-
-		//System.out.println(n + "" + type + second);
-		StaticValue.array = new char[StaticValue.n][StaticValue.n];
-		StaticValue.arrayCopy = new char[StaticValue.n][StaticValue.n];
-		StaticValue.arraySign = new char[StaticValue.n][StaticValue.n];
-		for (int i = 0; i < StaticValue.n; i++) {
-			String st = bufferedReader.readLine();
-			StaticValue.array[i] = st.toCharArray();
-		}
-		bufferedReader.close();
-		fileReader.close();
-		for (int j = 0; j < StaticValue.n; j++) {
-			for (int a = 0; a < StaticValue.n; a++)
-			StaticValue.arrayCopy[j][a] = StaticValue.array[j][a];
-		}
-	}
-
-	public static void output() throws FileNotFoundException,
-			UnsupportedEncodingException {
-		PrintWriter writer = new PrintWriter("C:\\Users\\zhaohui\\Desktop\\output.txt", "UTF-8");
-		writer.println(StaticValue.Char[StaticValue.XY[1]]+""+(StaticValue.XY[0]+1));
-		for (int i = 0; i < StaticValue.array[0].length; i++) {
-			for (int j = 0; j < StaticValue.array[0].length; j++)
-				writer.print(StaticValue.array[i][j]);
-			writer.println();
-		}
-		writer.close();
-	}
-}
-class RefreshSign {
-	public static void refreshSign() {
-		for (int i = 0; i < StaticValue.n; i++) {
-			for (int j = 0; j < StaticValue.n; j++)
-				StaticValue.arraySign[i][j] = '0';
-		}
-	}
-}
-
-
-
-
